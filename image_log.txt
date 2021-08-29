@@ -1,0 +1,3 @@
+# list of images selected...ideally random
+IMG_0768.HEIC
+IMG_0771.HEIC
