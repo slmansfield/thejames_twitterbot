@@ -89,10 +89,10 @@ def respondToTweet(file="tweet_ID.txt"):
 
 
 def always_on():
-    # while True:
-    #     respondToTweet()
-    #     logger.log.info("Waiting...")
-    #     time.sleep(120)
+    while True:
+        respondToTweet()
+        logger.log.info("Waiting...")
+        time.sleep(120)
     respondToTweet()
 
 
