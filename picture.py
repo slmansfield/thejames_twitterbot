@@ -1,3 +1,4 @@
+# import external python modules
 import random
 import os
 import pyheif
