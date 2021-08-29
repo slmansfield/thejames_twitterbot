@@ -5,9 +5,7 @@ import pyheif
 from PIL import Image
 
 # impor internal python modules
-import logger
-
-log = logger.createLogger()
+from logger import logger as log
 
 def random_image():
     # path = r"/home/slmansfield/my_twitterbot/images"
@@ -18,7 +16,6 @@ def random_image():
     add_selected_image_to_log("image_log.txt", random_filename)
     log.info("Selected {} file".format(random_filename))
     return random_filename
-
 
 def add_selected_image_to_log(log_file, image_filename):
     f = open(log_file, "a")
