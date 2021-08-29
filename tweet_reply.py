@@ -92,8 +92,8 @@ def respond_to_tweet(api, file="tweet_ID.txt"):
         elif "#jamesforall" in mention.full_text.lower():
             log.info("Responding back with {} to -{}".format("jamesforall", mention.id))
             create_tweet(api, mention)
-        elif "#allhailkingjames" in mention.full_text.lower():
-            log.info("Responding back with {} to -{}".format("allhailkingjames", mention.id))
+        elif "#allhailthejames" in mention.full_text.lower():
+            log.info("Responding back with {} to -{}".format("allhailthejames", mention.id))
             create_tweet(api, mention)
 
     put_last_tweet(file, new_id)
