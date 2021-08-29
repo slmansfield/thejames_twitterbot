@@ -12,9 +12,9 @@ consumer_secret_key = os.getenv("API_KEY_SECRET")
 access_token = os.getenv("ACCESS_TOKEN")
 access_token_secret = os.getenv("ACCESS_TOKEN_SECRET")
 
-log = logger.createLogger()
+log = logger.create_logger()
 
-def createApi():
+def create_api():
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
     auth.set_access_token(access_token, access_token_secret)
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
@@ -52,7 +52,7 @@ def follow_followers(api):
         else:
             log.info("no new followers")
 
-def createTweet(api, mention):
+def create_tweet(api, mention):
     try:
         # tweet = get_quote()
         # wallpaper.get_wallpaper(tweet)
@@ -73,7 +73,7 @@ def createTweet(api, mention):
     finally:
         os.remove("images/temp.jpg")
 
-def respondToTweet(api, file="tweet_ID.txt"):
+def respond_to_tweet(api, file="tweet_ID.txt"):
     last_id = get_last_tweet(file)
     mentions = api.mentions_timeline(last_id, tweet_mode="extended")
     if len(mentions) == 0:
@@ -88,24 +88,24 @@ def respondToTweet(api, file="tweet_ID.txt"):
 
         if "#pod" in mention.full_text.lower():
             log.info("Responding back with {} to -{}".format("pod", mention.id))
-            createTweet(api, mention)
+            create_tweet(api, mention)
         elif "#jamesforall" in mention.full_text.lower():
             log.info("Responding back with {} to -{}".format("jamesforall", mention.id))
-            createTweet(api, mention)
+            create_tweet(api, mention)
         elif "#allhailkingjames" in mention.full_text.lower():
             log.info("Responding back with {} to -{}".format("allhailkingjames", mention.id))
-            createTweet(api, mention)
+            create_tweet(api, mention)
 
     put_last_tweet(file, new_id)
 
 def always_on():
     while True:
-        api = createApi()
+        api = create_api()
         follow_followers(api)
-        respondToTweet(api)
+        respond_to_tweet(api)
         log.info("Waiting...")
         time.sleep(60)
-    respondToTweet()
+    
 
 if __name__ == "__main__":
     always_on()
