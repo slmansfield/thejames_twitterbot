@@ -1,25 +1,29 @@
+# install external python modules
+
 import tweepy
-
-# import logging
 import time
-import random
+import os
+# from dotenv import load_dotenv
 
-import pyheif
-from PIL import Image
+# install local python modules
 
 # import wallpaper
 # import quote
 import logger
 import picture
-import credentials
 
-consumer_key = credentials.API_key
-consumer_secret_key = credentials.API_secret_key
-access_token = credentials.access_token
-access_token_secret = credentials.access_token_secret
+# project_folder = os.path.expanduser('~/home/slmansfield/thejames_twitterbot')  # adjust as appropriate
+# load_dotenv(os.path.join(project_folder, '.env'))
+
+
+
+
+consumer_key = os.getenv("API_KEY")
+consumer_secret_key = os.getenv("API_KEY_SECRET")
+access_token = os.getenv("ACCESS_TOKEN")
+access_token_secret = os.getenv("ACCESS_TOKEN_SECRET")
 
 log = logger.createLogger()
-
 
 def createApi():
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
@@ -49,9 +53,16 @@ def put_last_tweet(file, Id):
     log.info("Updated the file with the latest tweet Id")
     return
 
+def follow_followers(api):
+    log.info("Retrieving and following followers")
+    for follower in tweepy.Cursor(api.followers).items():
+        if not follower.following:
+            log.info(f"Following {follower.name}")
+            follower.follow()
+        else:
+            log.info("no new follwers")
 
-def respondToTweet(file="tweet_ID.txt"):
-    api = createApi()
+def respondToTweet(api, file="tweet_ID.txt"):
     last_id = get_last_tweet(file)
     mentions = api.mentions_timeline(last_id, tweet_mode="extended")
     if len(mentions) == 0:
@@ -89,9 +100,11 @@ def respondToTweet(file="tweet_ID.txt"):
 
 def always_on():
     while True:
-        respondToTweet()
-        logger.log.info("Waiting...")
-        time.sleep(120)
+        api = createApi()
+        follow_followers(api)
+        respondToTweet(api)
+        log.info("Waiting...")
+        time.sleep(60)
     respondToTweet()
 
 
