@@ -1,22 +1,11 @@
 # install external python modules
-
 import tweepy
 import time
 import os
-# from dotenv import load_dotenv
 
 # install local python modules
-
-# import wallpaper
-# import quote
 import logger
 import picture
-
-# project_folder = os.path.expanduser('~/home/slmansfield/thejames_twitterbot')  # adjust as appropriate
-# load_dotenv(os.path.join(project_folder, '.env'))
-
-
-
 
 consumer_key = os.getenv("API_KEY")
 consumer_secret_key = os.getenv("API_KEY_SECRET")
@@ -38,13 +27,11 @@ def createApi():
     # logger.log.info("API Created")
     return api
 
-
 def get_last_tweet(file):
     f = open(file, "r")
     lastId = int(f.read().strip())
     f.close()
     return lastId
-
 
 def put_last_tweet(file, Id):
     f = open(file, "w")
@@ -57,10 +44,34 @@ def follow_followers(api):
     log.info("Retrieving and following followers")
     for follower in tweepy.Cursor(api.followers).items():
         if not follower.following:
-            log.info(f"Following {follower.name}")
+            log.info(f"Following {follower.screen_name}")
             follower.follow()
+            # adding a mention to welcome new follower
+            # api.update_status(
+            #         "@" + follower.screen_name + " Welcome to TheJames"verse"", All Hail King James!)
         else:
-            log.info("no new follwers")
+            log.info("no new followers")
+
+def createTweet(api, mention):
+    try:
+        # tweet = get_quote()
+        # wallpaper.get_wallpaper(tweet)
+        picture.getPicture()
+        media = api.media_upload("images/temp.jpg")
+
+        log.info("liking and replying to tweet")
+
+        api.create_favorite(mention.id)
+        log.info("liked tweet")
+        api.update_status(
+            "@" + mention.user.screen_name + " Here's your Picture",
+            mention.id,
+            media_ids=[media.media_id],
+        )
+    except:
+        log.info("Already replied to {}".format(mention.id))
+    finally:
+        os.remove("images/temp.jpg")
 
 def respondToTweet(api, file="tweet_ID.txt"):
     last_id = get_last_tweet(file)
@@ -76,27 +87,16 @@ def respondToTweet(api, file="tweet_ID.txt"):
         new_id = mention.id
 
         if "#pod" in mention.full_text.lower():
-            log.info("Responding back with POD to -{}".format(mention.id))
-            try:
-                # tweet = get_quote()
-                # wallpaper.get_wallpaper(tweet)
-                picture.getPicture()
-                media = api.media_upload("images/temp.jpg")
-
-                log.info("liking and replying to tweet")
-
-                api.create_favorite(mention.id)
-                log.info("liked tweet")
-                api.update_status(
-                    "@" + mention.user.screen_name + " Here's your Picture",
-                    mention.id,
-                    media_ids=[media.media_id],
-                )
-            except:
-                log.info("Already replied to {}".format(mention.id))
+            log.info("Responding back with {} to -{}".format("pod", mention.id))
+            createTweet(api, mention)
+        elif "#jamesforall" in mention.full_text.lower():
+            log.info("Responding back with {} to -{}".format("jamesforall", mention.id))
+            createTweet(api, mention)
+        elif "#allhailkingjames" in mention.full_text.lower():
+            log.info("Responding back with {} to -{}".format("allhailkingjames", mention.id))
+            createTweet(api, mention)
 
     put_last_tweet(file, new_id)
-
 
 def always_on():
     while True:
@@ -106,7 +106,6 @@ def always_on():
         log.info("Waiting...")
         time.sleep(60)
     respondToTweet()
-
 
 if __name__ == "__main__":
     always_on()
