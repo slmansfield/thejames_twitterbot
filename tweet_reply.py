@@ -4,7 +4,7 @@ import time
 import os
 
 # install local python modules
-import logger
+from logger import logger as log
 import picture
 
 consumer_key = os.getenv("API_KEY")
