@@ -10,3 +10,5 @@ These images are from one of several iPhones in my family, so the heic files nee
 I currently have the program hosted on pythonanywhere.com (paid account for always on task)
 
 I'll update this more as I add more features.
+
+testing commit and mergedd
